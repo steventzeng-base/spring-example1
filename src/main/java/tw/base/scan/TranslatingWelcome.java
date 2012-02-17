@@ -7,10 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Qualifier("tranlate")
 public class TranslatingWelcome extends Welcome {
-	@Autowired
-	private GoogleTranslator translator;
-	@Override
-	public String buldPhrase(String city) {
-		return translator.translate(super.buldPhrase(city));
-	}
+
+    @Autowired
+    private GoogleTranslator translator;
+
+    @Override
+    public String buldPhrase(String city) {
+        return translator.translate(super.buldPhrase(city));
+    }
 }
