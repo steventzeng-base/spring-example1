@@ -46,6 +46,7 @@ public class App {
         listData(dao);
         printLine();
         System.out.println("salary bonus");
+        //轉帳失敗，全部交易 rollback
         try {
             financialSystem.salarying(20000);
         } catch (SalaryingTransferError e) {
@@ -54,6 +55,7 @@ public class App {
         listData(dao);
         printLine();
         System.out.println("salary bonus little");
+        //當全部成功時，才全部 commit
         try {
             financialSystem.salarying(10000);
         } catch (SalaryingTransferError e) {
