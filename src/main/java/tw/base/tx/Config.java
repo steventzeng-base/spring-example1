@@ -37,7 +37,12 @@ public class Config {
     }
 
     @Bean
-    public FinancialSystem financialSystem(){
-        return new FinancialSystemImpl(accountDAO());
+    public HistroyDAO histroyDAO() {
+        return new HistoryDAOImpl(dataSource());
+    }
+
+    @Bean
+    public FinancialSystem financialSystem() {
+        return new FinancialSystemImpl(accountDAO(), histroyDAO());
     }
 }

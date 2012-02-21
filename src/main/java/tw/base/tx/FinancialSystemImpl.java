@@ -13,12 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class FinancialSystemImpl implements FinancialSystem {
 
-    private AccountDAO accountDAO;
+    private final AccountDAO accountDAO;
+
+    private final HistroyDAO histroyDAO;
 
     private Long companyId;
 
-    public FinancialSystemImpl(AccountDAO accountDAO) {
+    public FinancialSystemImpl(AccountDAO accountDAO, HistroyDAO histroyDAO) {
         this.accountDAO = accountDAO;
+        this.histroyDAO = histroyDAO;
     }
 
     @Override
@@ -60,7 +63,9 @@ public class FinancialSystemImpl implements FinancialSystem {
             accountDAO.update(fromAccount);
             accountDAO.update(toAccount);
         } catch (DataAccessException e) {
+            histroyDAO.logFailure();
             throw new TransferError();
         }
+        histroyDAO.logSuccess();
     }
 }

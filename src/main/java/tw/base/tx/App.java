@@ -15,35 +15,36 @@ public class App {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
-        AccountDAO dao = applicationContext.getBean(AccountDAO.class);
-        listData(dao);
+        AccountDAO accountDAO = applicationContext.getBean(AccountDAO.class);
+        listData(accountDAO);
         //新增一筆資料
-        dao.addNewOne(new Account(null, "Tony", 10000));
-        listData(dao);
+        accountDAO.addNewOne(new Account(null, "Tony", 10000));
+        listData(accountDAO);
         try {
             //新增兩筆資料，沒有 transaction，其中一筆成功，但另一筆失敗
-            dao.addNewOne(new Account(null, "richlMan", 10000000));
-            dao.addNewOne(new Account(null, "poolMan", -10));
+            accountDAO.addNewOne(new Account(null, "richlMan", 10000000));
+            accountDAO.addNewOne(new Account(null, "poolMan", -10));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        listData(dao);
+        listData(accountDAO);
 
         try {
             //新增兩筆資料，有 transaction，任一筆失敗都會造成失敗
-            dao.addMoreNew(new Account(null, "richlMan2", 10000000), new Account(null, "poolMan2", -10));
+            accountDAO.addMoreNew(new Account(null, "richlMan2", 10000000), new Account(null, "poolMan2", -10));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        listData(dao);
+        listData(accountDAO);
         printLine();
         //transaction 的傳播示範，交易由 financialSystem 開始，傳播至 accountdao
         System.out.println("FinancilaSystem");
         printLine();
+        HistroyDAO histroyDAO = applicationContext.getBean(HistroyDAO.class);
         FinancialSystem financialSystem = applicationContext.getBean(FinancialSystem.class);
         financialSystem.setCompanyId(1L);
         financialSystem.salarying();
-        listData(dao);
+        listData(accountDAO);
         printLine();
         System.out.println("salary bonus");
         //轉帳失敗，全部交易 rollback
@@ -52,7 +53,8 @@ public class App {
         } catch (SalaryingTransferError e) {
             System.out.println(e.getMessage());
         }
-        listData(dao);
+        listData(accountDAO);
+        listLog(histroyDAO);
         printLine();
         System.out.println("salary bonus little");
         //當全部成功時，才全部 commit
@@ -61,7 +63,8 @@ public class App {
         } catch (SalaryingTransferError e) {
             System.out.println(e.getMessage());
         }
-        listData(dao);
+        listData(accountDAO);
+        listLog(histroyDAO);
         printLine();
     }
 
@@ -77,5 +80,11 @@ public class App {
             System.out.print("=");
         }
         System.out.println();
+    }
+
+    private static void listLog(HistroyDAO dao) {
+        for (String entry : dao.list()) {
+            System.out.println(entry);
+        }
     }
 }
