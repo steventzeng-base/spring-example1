@@ -4,8 +4,8 @@
  */
 package tw.base.qualifier;
 
-import tw.base.QualifierConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import tw.base.QualifierConfig;
 
 /**
  *

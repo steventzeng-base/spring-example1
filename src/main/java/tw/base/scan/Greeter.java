@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Greeter {
-	@Autowired
-	@Qualifier("default")
-	//@Qualifier("tranlate")
-	private Welcome welcome;
-	
-	public void welcomeVisitors(){
-		System.out.println(welcome.buldPhrase("New York"));
-	}
+
+    @Autowired
+    @Qualifier("default")
+    //@Qualifier("tranlate")
+    private Welcome welcome;
+
+    public void welcomeVisitors() {
+        System.out.println(welcome.buldPhrase("New York"));
+    }
 }
