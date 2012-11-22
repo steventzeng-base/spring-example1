@@ -12,13 +12,15 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  *
  * @author steven
  */
 @Configuration
-@ImportResource("/tx.xml")
+//@ImportResource("/tx.xml")
+@EnableTransactionManagement
 public class Config {
 
     @Bean
