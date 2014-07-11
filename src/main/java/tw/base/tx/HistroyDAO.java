@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tw.base.tx;
 
 import java.util.List;
@@ -14,8 +10,8 @@ public interface HistroyDAO {
 
     List<String> list();
 
-    void logSuccess();
+    void logSuccess(Account account);
 
-    public void logFailure();
+    public void logFailure(Account account, String errorMessage);
 
 }

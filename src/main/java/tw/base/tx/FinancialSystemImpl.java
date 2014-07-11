@@ -4,6 +4,7 @@
  */
 package tw.base.tx;
 
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,8 @@ public class FinancialSystemImpl implements FinancialSystem {
     private final HistroyDAO histroyDAO;
 
     private Long companyId;
+    
+    private long[] employeeIds;
 
     public FinancialSystemImpl(AccountDAO accountDAO, HistroyDAO histroyDAO) {
         this.accountDAO = accountDAO;
@@ -30,10 +33,15 @@ public class FinancialSystemImpl implements FinancialSystem {
     }
 
     @Override
-    public Long getCompanyId() {
-        return companyId;
+    public void setEmpoyeesIds(long... ids) {
+        this.employeeIds = ids;
     }
+    
+    
 
+    /**
+     * 發薪資
+     */
     @Override
     @Transactional
     public void salarying() {
@@ -43,7 +51,7 @@ public class FinancialSystemImpl implements FinancialSystem {
     @Override
     @Transactional
     public void salarying(double salary) {
-        for (Long id : new Long[]{2L, 3L, 4L, 5L}) {
+        for (Long id : this.employeeIds) {
             try {
                 transfer(companyId, id, salary);
             } catch (TransferError e) {
@@ -55,17 +63,17 @@ public class FinancialSystemImpl implements FinancialSystem {
     @Transactional
     @Override
     public void transfer(Long from, Long to, double amount) {
-        try {
             Account fromAccount = accountDAO.findById(from);
             Account toAccount = accountDAO.findById(to);
+        try {
             fromAccount.setAmount(fromAccount.getAmount() - amount);
             toAccount.setAmount(toAccount.getAmount() + amount);
             accountDAO.update(fromAccount);
             accountDAO.update(toAccount);
         } catch (DataAccessException e) {
-            histroyDAO.logFailure();
+            histroyDAO.logFailure(toAccount, e.getMessage());
             throw new TransferError();
         }
-        histroyDAO.logSuccess();
+        histroyDAO.logSuccess(toAccount);
     }
 }

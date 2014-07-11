@@ -26,24 +26,24 @@ public class HistoryDAOImpl implements HistroyDAO {
     }
 
     @Override
-    public void logSuccess() {
-        template.update("INSERT INTO LOG(NAME, MESSAGE, logtime)VALUES(?, ?, ?)", "steven", "Success", new Date());
+    public void logSuccess(Account account) {
+        template.update("INSERT INTO LOG(NAME, MESSAGE, logtime)VALUES(?, ?, ?)", account.getName(), "Success", new Date());
     }
 
     @Override
-    public void logFailure() {
-        template.update("INSERT INTO LOG(NAME, MESSAGE, logtime)VALUES(?, ?, ?)", "steven", "Failure", new Date());
+    public void logFailure(Account account, String errorMessage) {
+        template.update("INSERT INTO LOG(NAME, MESSAGE, logtime)VALUES(?, ?, ?)", account.getName(), "Failure " + errorMessage, new Date());
     }
 
     @Override
     public List<String> list() {
-        List<Map<String, Object>> result = template.queryForList("SELECT * FROM LOG ORDER BY LOGTIME DESC");
+        List<Map<String, Object>> result = template.queryForList("SELECT * FROM LOG");
         if (result.isEmpty()) {
             return Collections.emptyList();
         }
-        List<String> records = new ArrayList<String>();
+        List<String> records = new ArrayList<>();
         for (Map<String, Object> row : result) {
-            records.add(String.format("name: %s message:%s : %tF %<tT %<tL", row.get("NAME"), row.get("MESSAGE"), row.get("LOGTIME")));
+            records.add(String.format("name: %s message:%s : %tF %<tT %<tL", row.get("NAME"), row.get("MESSAGE"), (Date) row.get("LOGTIME")));
         }
         return records;
     }
